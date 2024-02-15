@@ -53,7 +53,7 @@ try {
     $procmonProcess = Start-Procmon-Capture # Start Process Monitor capture
     Start-Sleep -Seconds 30 # Capture data for 30 seconds
     Stop-Procmon-Capture # Stop Process Monitor capture
-    Move-Item -Path "$downloadFolder\$procmonCaptureFile" -Destination $capturedLogsDirectory # Rename and move the capture file
+    Move-Item -Path ".\$procmonCaptureFile" -Destination $capturedLogsDirectory # Rename and move the capture file
     Write-Host "Process Monitor capture complete. File saved as $($procmonCaptureFile) in $($capturedLogsDirectory)"
 }
 catch {
@@ -62,7 +62,7 @@ catch {
 
 # Uninstall Process Monitor
 try {
-    Stop-Process -Name "Procmon64" -Force # Find and stop the Process Monitor process
+    # Stop-Process -Name "Procmon64" -Force # Find and stop the Process Monitor process
     Remove-Item -Path $downloadFolder -Recurse -Force # Clean up: Remove downloaded files and folders
     Write-Host "Process Monitor has been uninstalled and all associated files have been removed."
 }
