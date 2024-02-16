@@ -1,13 +1,40 @@
-$downloadFolder = "C:\TMW_freeze_procmon_$(Get-Date -Format 'yyyyMMddHHmmss')"  # define the folder where you want to save and extract Process Monitor
-$procmonCaptureFile = "TMW_freeze_procmon_$(Get-Date -Format 'yyyyMMddHHmmss').PML"  # define the name for the Procmon capture file
-$capturedLogsDirectory = "C:\capturedLogs"   # define the destination directory for all captured logs
+#requires -version 2
+<#
+.SYNOPSIS
+  
+.DESCRIPTION
+  <Brief description of script>
+.PARAMETER <Parameter_Name>
+    <Brief description of parameter input required. Repeat this attribute if required>
+.INPUTS
+  1.
+.OUTPUTS
+  Log file stored in C:\TMW_freeze_logs_<date>.zip
+  1. TMW_freeze_procdump
+  2. TMW_freeze_events
+  3. TMW_freeze_processexplorer
+  4. TMW_freeze_processmon
+.NOTES
+  Version:        1.0
+  Author:         Cristopher Zapanta, ITOC SRE
+  Creation Date:  11/24/2023
+  Purpose/Change: Initial script development
+  
+.EXAMPLE
+  <Example goes here. Repeat this attribute for more than one example>
+#>
 
-# 1. Process Monitor
+#---------------------------------------------------------[Initialisations]--------------------------------------------------------
+
+$capturedLogsDirectory = "C:\capturedLogs"   # define the destination directory for all captured logs
 # Check internet connectivity by pinging 8.8.8.8
 Function Test-InternetConnection {
     return (Test-Connection -ComputerName 8.8.8.8 -Count 1 -Quiet)
 }
+#---------------------------------------------------------[1. PROCESS MONITOR]--------------------------------------------------------
 
+$downloadFolder = "C:\TMW_freeze_procmon_$(Get-Date -Format 'yyyyMMddHHmmss')"  # define the folder where you want to save and extract Process Monitor
+$procmonCaptureFile = "TMW_freeze_procmon_$(Get-Date -Format 'yyyyMMddHHmmss').PML"  # define the name for the Procmon capture file
 # Download and extract Process Monitor
 Function Download-And-Install-Procmon {
     # Create the download folder if it doesn't exist
@@ -27,7 +54,7 @@ Function Download-And-Install-Procmon {
 
 # Start Process Monitor capture
 Function Start-Procmon-Capture {
-    # Start Process Monitor and apply filters
+    # Start Process Monitor and apply filters; Disable EULA and allow backingfile and quiet installation
     $procmonProcess = Start-Process -FilePath "$downloadFolder\Procmon64.exe" -ArgumentList "/Minimized /Backingfile .\$procmonCaptureFile /Runtime 30 /Quiet" -PassThru
     Write-Host "Capturing the events ..."
     return $procmonProcess
@@ -71,13 +98,9 @@ catch {
     Write-Host "An error occurred while uninstalling Process Monitor: $_"
 }
 
-# 2. Process Explorer
+#---------------------------------------------------------[2. PROCESS EXPLORER]--------------------------------------------------------
 $downloadFolder = "C:\TMW_freeze_processexplorer_$(Get-Date -Format 'yyyyMMddHHmmss')"  # Define the folder where to save and extract Process Explorer
 $procexpCaptureFile = "TMW_freeze_processexplorer_$(Get-Date -Format 'yyyyMMddHHmmss').txt"  # define the name for the Procmon capture file
-
-Function Test-InternetConnection {
-    return (Test-Connection -ComputerName 8.8.8.8 -Count 1 -Quiet)
-}
 
 # Download and extract Process Monitor
 Function Download-And-Install-ProcExplorer {
@@ -106,7 +129,6 @@ Function Download-And-Install-ProcExplorer {
 
 # Function to start Process Explorer, save it, and close it
 Function Start-Save-Close-ProcessExplorer {
-Write-Host $downloadFolder
     $ProcExpPath = Join-Path -Path $downloadFolder -ChildPath "procexp64.exe"
     $SaveFile = Join-Path -Path $downloadFolder -ChildPath $procexpCaptureFile
 
@@ -175,8 +197,7 @@ catch {
     Write-Host "An error occurred while uninstalling Process Explorer: $_"
 }
 
-
-# 3. Process Monitor
+#---------------------------------------------------------[3. PROCESS DUMP]--------------------------------------------------------
 $downloadFolder = "C:\TMW_freeze_procdump_$(Get-Date -Format 'yyyyMMddHHmmss')"
 Write-Host "$downloadFolder"
 
