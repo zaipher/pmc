@@ -1,9 +1,6 @@
- # Define the folder where you want to save and extract Process Monitor
- $downloadFolder = "C:\TMW_freeze_procmon_$(Get-Date -Format 'yyyyMMddHHmmss')"
-
- # Define the name for the Procmon capture file
- $procmonCaptureFile = "TMW_freeze_procmon_$(Get-Date -Format 'yyyyMMddHHmmss').PML"
- 
+$downloadFolder = "C:\TMW_freeze_procmon_$(Get-Date -Format 'yyyyMMddHHmmss')"  # define the folder where you want to save and extract Process Monitor
+$procmonCaptureFile = "TMW_freeze_procmon_$(Get-Date -Format 'yyyyMMddHHmmss').PML"  # define the name for the Procmon capture file
+$capturedLogsDirectory = "C:\capturedLogs"   # define the destination directory for all captured logs
  # Function to download and extract Process Monitor
  Function Download-And-Install-Procmon {
      # Create the download folder if it doesn't exist

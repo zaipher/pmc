@@ -318,3 +318,22 @@ catch {
 
 # Compress the collected logs
 Compress-Archive -Path "$capturedLogsDirectory" -DestinationPath "TMW_freeze_logs_$(Get-Date -Format 'yyyyMMdd').zip"
+
+
+# Define SharePoint site URL and folder path
+$SharePointSiteURL = "https://yourtenant.sharepoint.com/sites/YourSiteName"
+$FolderName = "Shared Documents/Logs"
+
+# Upload the ZIP file to SharePoint OneDrive
+try {
+    # Connect to SharePoint Online
+    Connect-SPOService -Url $SharePointSiteURL
+    
+    # Upload the ZIP file to the specified folder
+    Add-SPOFile -Path "C:\TMW_freeze_logs_$(Get-Date -Format 'yyyyMMdd').zip" -Folder $FolderName -Checkout $false -Publish $true
+
+    Write-Host "Logs uploaded to SharePoint OneDrive successfully."
+}
+catch {
+    Write-Host "An error occurred while uploading logs to SharePoint OneDrive: $_"
+}
